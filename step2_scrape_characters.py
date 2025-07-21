@@ -1,7 +1,7 @@
 # step2_scrape_characters.py
 
 # This script is dedicated to Step 2: Fetching the master list of all characters.
-# It can be run independently to complete this specific task.
+# It now also identifies characters with duplicate names and saves them to a separate file.
 
 import cloudscraper
 import json
@@ -9,9 +9,8 @@ from bs4 import BeautifulSoup
 import config
 from src import utils
 from src.database import manager
+from collections import defaultdict
 
-# Re-using the functions from the series scraper, as the logic is identical.
-# In a larger project, this would be refactored into a shared module.
 scraper = cloudscraper.create_scraper()
 
 def get_initial_page(url):
@@ -72,7 +71,20 @@ def main():
     full_list = list(master_list_dict.values())
     print(f"\nTotal unique characters found: {len(full_list)}")
     
+    # --- New Logic to Find Duplicates ---
+    names_to_chars = defaultdict(list)
+    for char in full_list:
+        # Group all characters by their name
+        names_to_chars[char['name']].append(char)
+    
+    # Find all names that appear more than once
+    duplicates = {name: chars for name, chars in names_to_chars.items() if len(chars) > 1}
+    
+    print(f"Found {len(duplicates)} character names that are used more than once.")
+    
+    # Save the master list and the duplicates list
     manager.save_to_json(full_list, config.MASTER_CHARACTER_LIST_PATH)
+    manager.save_to_json(duplicates, config.DUPLICATE_CHARACTERS_PATH)
     print("--- Step 2 Complete ---")
 
 if __name__ == "__main__":
