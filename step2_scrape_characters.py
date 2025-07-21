@@ -2,6 +2,7 @@
 
 # This script is dedicated to Step 2: Fetching the master list of all characters.
 # It now also identifies characters with duplicate names and saves them to a separate file.
+# UPDATE: Added immediate shutdown on any network error to prevent IP bans.
 
 import cloudscraper
 import json
@@ -10,6 +11,7 @@ import config
 from src import utils
 from src.database import manager
 from collections import defaultdict
+import sys # Import sys to allow for script termination
 
 scraper = cloudscraper.create_scraper()
 
@@ -18,18 +20,20 @@ def get_initial_page(url):
     print(f"Fetching initial page from HTML: {url}")
     try:
         response = scraper.get(url, headers=config.HEADERS)
-        response.raise_for_status()
+        response.raise_for_status() # This will raise an exception for HTTP errors (like 403, 429)
         soup = BeautifulSoup(response.text, 'html.parser')
         table_wrapper = soup.find('div', id='table-wrapper')
         if not table_wrapper or 'data-data' not in table_wrapper.attrs:
-            print("Error: Could not find the data-data attribute.")
-            return None
+            print("CRITICAL ERROR: Could not find the data-data attribute in the HTML.")
+            sys.exit(1) # Exit immediately
         data = json.loads(table_wrapper['data-data'])
         print(f"Successfully scraped {len(data)} items from the initial page.")
         return data
     except Exception as e:
-        print(f"An error occurred during the initial page request: {e}")
-        return None
+        # If any error occurs (network, parsing, etc.), print it and shut down.
+        print(f"\nCRITICAL ERROR: An error occurred during the initial page request: {e}")
+        print("Shutting down immediately to prevent further requests.")
+        sys.exit(1) # Exit immediately
 
 def get_api_pages(item_type):
     """Fetches all subsequent pages of data from the API."""
@@ -40,7 +44,7 @@ def get_api_pages(item_type):
         params = {'type': item_type, 'currentPage': current_page}
         try:
             response = scraper.get(config.API_URL, params=params, headers=config.HEADERS)
-            response.raise_for_status()
+            response.raise_for_status() # This will raise an exception for HTTP errors
             data = response.json()
             page_items = data.get('results', [])
             if not page_items:
@@ -54,13 +58,15 @@ def get_api_pages(item_type):
             current_page += 1
             utils.randomized_delay()
         except Exception as e:
-            print(f"An error occurred during API request for page {current_page}: {e}")
-            break
+            # If any error occurs, print it and shut down the entire script.
+            print(f"\nCRITICAL ERROR: An error occurred during API request for page {current_page}: {e}")
+            print("Shutting down immediately to prevent further requests.")
+            sys.exit(1) # Exit immediately
     return all_items
 
 def main():
     print("--- Running Step 2: Fetch Master Character List ---")
-    initial_chars = get_initial_page(config.CHARACTER_LIST_URL) or []
+    initial_chars = get_initial_page(config.CHARACTER_LIST_URL)
     utils.randomized_delay()
     api_chars = get_api_pages('character')
     
