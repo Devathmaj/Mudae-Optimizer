@@ -8,9 +8,9 @@ import sys
 # We import the main functions from our new standalone scripts
 # NOTE: Filenames cannot start with numbers in Python for imports.
 # The script files have been renamed (e.g., '1_scrape_series.py' -> 'step1_scrape_series.py')
-from src.data_acquisition import step1_scrape_series
-from src.data_acquisition import step2_scrape_characters
-from src.data_acquisition import step3_scrape_bundles
+import step1_scrape_series
+import step2_scrape_characters
+import step3_scrape_bundles
 
 def main():
     """

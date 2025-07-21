@@ -18,9 +18,16 @@ HEADERS = {
 # --- Data File Paths ---
 # Defines where the collected data will be stored.
 DATA_DIR = "data"
-MASTER_SERIES_LIST_PATH = f"{DATA_DIR}/master_series_list.json"
+# Step 1 now produces a candidate list.
+CANDIDATE_SERIES_LIST_PATH = f"{DATA_DIR}/candidate_series_list.json"
 MASTER_CHARACTER_LIST_PATH = f"{DATA_DIR}/master_character_list.json"
 BUNDLE_TO_SERIES_MAP_PATH = f"{DATA_DIR}/bundle_to_series_map.json"
+# Step 3 will produce the final, validated list.
+VALIDATED_SERIES_LIST_PATH = f"{DATA_DIR}/validated_master_series_list.json"
+
+# --- Exception File ---
+# The list of valid series that have no bundles.
+NOBUNDLES_TXT_PATH = "nobundles.txt"
 
 
 # --- Delays for Mimicking Human Behavior ---
