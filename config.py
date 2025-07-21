@@ -17,8 +17,6 @@ HEADERS = {
 
 # --- Proxy Configuration ---
 # To run the scraper through a different IP address.
-# Recommended for safety and running multiple accounts.
-#
 # TO RUN WITHOUT A PROXY: Leave this dictionary empty, exactly as it is below.
 # The script will automatically detect that it's empty and run on your own network.
 #
