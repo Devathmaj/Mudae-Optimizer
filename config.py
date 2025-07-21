@@ -15,6 +15,20 @@ HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
 }
 
+# --- Proxy Configuration ---
+# To run the scraper through a different IP address.
+# Recommended for safety and running multiple accounts.
+#
+# TO RUN WITHOUT A PROXY: Leave this dictionary empty, exactly as it is below.
+# The script will automatically detect that it's empty and run on your own network.
+#
+# TO USE A PROXY: Uncomment and fill in your proxy details.
+# Format: "http://username:password@host:port" or "http://host:port"
+PROXY = {
+    # "http": "http://your_proxy_address:port",
+    # "https": "http://your_proxy_address:port",
+}
+
 # --- Data File Paths ---
 # Defines where the collected data will be stored.
 DATA_DIR = "data"
