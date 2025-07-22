@@ -10,7 +10,7 @@ import sys
 # The script files have been renamed (e.g., '1_scrape_series.py' -> 'step1_scrape_series.py')
 import step1_scrape_series
 import step2_scrape_characters
-import step3_scrape_bundles
+import step3_enrich_series_data
 
 def main():
     """
@@ -28,7 +28,7 @@ def main():
     elif step == "characters":
         step2_scrape_characters.main()
     elif step == "bundles":
-        step3_scrape_bundles.main()
+        step3_enrich_series_data.main()
     else:
         print(f"Error: Unknown step '{step}'.")
         print("Available steps: series, characters, bundles")
